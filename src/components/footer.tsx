@@ -1,27 +1,40 @@
+import { socials } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
-const Footer = () => {
+async function getData() {
+  const res1 = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/social`, {
+    method: "GET",
+  });
+  const socials: socials = await res1.json();
+
+  return {
+    socials,
+  };
+}
+
+const Footer = async () => {
+  const { socials } = await getData();
   const socialLinks = [
     {
       id: 1,
       icon: "/social/facebook.svg",
-      link: "https://www.facebook.com/",
+      link: socials.facebook,
     },
     {
       id: 2,
       icon: "/social/instagram.svg",
-      link: "https://www.instagram.com/",
+      link: socials.instagram,
     },
     {
       id: 3,
       icon: "/social/twitter.svg",
-      link: "https://twitter.com",
+      link: socials.twitter,
     },
     {
       id: 4,
       icon: "/social/youtube.svg",
-      link: "https://www.youtube.com",
+      link: socials.youtube,
     },
   ];
 

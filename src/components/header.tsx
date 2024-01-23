@@ -1,25 +1,47 @@
-import { Facebook, Linkedin, Twitter } from "lucide-react";
+// Packages
+import { socials } from "@prisma/client";
 import moment from "moment";
+import Image from "next/image";
 import Link from "next/link";
+
+// Local Imports
 import { Input } from "./ui/input";
 import UserButton from "./user-button";
 
-const Header = () => {
-  const socialLink = [
+async function getData() {
+  const res1 = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/social`, {
+    method: "GET",
+  });
+  const socials: socials = await res1.json();
+
+  return {
+    socials,
+  };
+}
+
+const Header = async () => {
+  const { socials } = await getData();
+
+  const socialLinks = [
     {
       id: 1,
-      icon: <Facebook className="w-5 h-5 hover:text-orange-600" />,
-      link: "",
+      icon: "/social/facebook.svg",
+      link: socials.facebook,
     },
     {
-      id: 1,
-      icon: <Twitter className="w-5 h-5 hover:text-orange-600" />,
-      link: "",
+      id: 2,
+      icon: "/social/instagram.svg",
+      link: socials.instagram,
     },
     {
-      id: 1,
-      icon: <Linkedin className="w-5 h-5 hover:text-orange-600" />,
-      link: "",
+      id: 3,
+      icon: "/social/twitter.svg",
+      link: socials.twitter,
+    },
+    {
+      id: 4,
+      icon: "/social/youtube.svg",
+      link: socials.youtube,
     },
   ];
 
@@ -46,10 +68,16 @@ const Header = () => {
       <section className="flex h-[80px] justify-between items-center contain">
         <div className="text-slate-500">{moment(new Date()).format("LL")}</div>
         <h2>Kaler Kontho</h2>
-        <div className="flex items-center gap-x-3">
-          {socialLink.map(({ icon, id, link }) => (
-            <a href={link} className="p-2" key={id}>
-              {icon}
+        <div className="flex items-center gap-x-4 mt-1">
+          {socialLinks?.map(({ icon, id, link }) => (
+            <a key={id} href={link} target="_blank">
+              <Image
+                src={icon}
+                alt="socialIcon"
+                width={20}
+                height={20}
+                className="hover:scale-105 duration-500"
+              />
             </a>
           ))}
         </div>

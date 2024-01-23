@@ -69,8 +69,6 @@ model socials {
   youtube   String   @db.VarChar(200)
   twitter   String   @db.VarChar(200)
   instagram String   @db.VarChar(200)
-  about     String   @db.Text
-  address   String   @db.Text
   createdAt DateTime @default(now()) @db.Timestamp(0)
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }
