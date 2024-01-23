@@ -17,6 +17,7 @@ model user {
   password  String    @db.VarChar(50)
   image     String    @db.VarChar(300)
   accounts  Account[]
+  news      news[]
   createdAt DateTime  @default(now()) @db.Timestamp(0)
   updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(0)
 }
@@ -48,15 +49,29 @@ model categories {
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }
 
-model news {
-  id        Int    @id @default(autoincrement())
-  title     String @db.VarChar(100)
-  short_des String @db.VarChar(400)
-  image     String @db.VarChar(300)
-  keywords  String @db.VarChar(300)
-  long_des  String @db.LongText
+enum newsType {
+  features
+  latest
+  populer
+}
 
-  catID      Int
+model news {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(100)
+  short_des String   @db.VarChar(400)
+  image     String   @db.VarChar(300)
+  keywords  String   @db.VarChar(300)
+  type      newsType
+  text1     String   @db.VarChar(600)
+  text2     String   @db.VarChar(600)
+  text3     String   @db.VarChar(600)
+  text4     String   @db.VarChar(600)
+
+  userID Int
+  user   user @relation(fields: [userID], references: [id])
+
+  catID Int
+
   categories categories @relation(fields: [catID], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
   createdAt DateTime @default(now()) @db.Timestamp(0)
