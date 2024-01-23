@@ -1,5 +1,6 @@
 "use client";
 
+import { register } from "@/actions/auth/register";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,30 +12,25 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { registrationSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CldUploadWidget } from "next-cloudinary";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
-
-const loginSchema = z.object({
-  email: z.string().email({
-    message: "Invalid email address!",
-  }),
-  password: z.string(),
-  name: z.string().min(4),
-  image: z.string(),
-});
 
 const RegistrationForm = () => {
   const [mount, setMount] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     setMount(true);
   }, []);
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<z.infer<typeof registrationSchema>>({
+    resolver: zodResolver(registrationSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -43,15 +39,33 @@ const RegistrationForm = () => {
     },
     mode: "onChange",
   });
-  const watch = form.watch;
 
   if (!mount) {
     return null;
   }
 
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    const isValid = loginSchema.safeParse(values);
-    console.log(values);
+  const router = useRouter();
+
+  const onSubmit = (values: z.infer<typeof registrationSchema>) => {
+    const toastId = toast.loading("Please wait...");
+
+    startTransition(() => {
+      register(values).then((res) => {
+        if (res?.error) {
+          toast.error(res.error, {
+            id: toastId,
+          });
+        }
+
+        if (res?.success) {
+          toast.success(res.success, {
+            id: toastId,
+          });
+          form.reset();
+          router.push("/");
+        }
+      });
+    });
   };
 
   const onUpload = (result: any) => {
@@ -114,7 +128,7 @@ const RegistrationForm = () => {
               );
             }}
           </CldUploadWidget>
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={isPending}>
             Registration
           </Button>
         </form>

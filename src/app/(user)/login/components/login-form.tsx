@@ -1,5 +1,6 @@
 "use client";
 
+import { login } from "@/actions/auth/login";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,27 +12,23 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoginSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
-
-const loginSchema = z.object({
-  email: z.string().email({
-    message: "Invalid email address!",
-  }),
-  password: z.string(),
-});
 
 const LoginForm = () => {
   const [mount, setMount] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     setMount(true);
   }, []);
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -42,8 +39,24 @@ const LoginForm = () => {
     return null;
   }
 
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    console.log(values);
+  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    const toastId = toast.loading("logging...");
+
+    startTransition(() => {
+      login(values).then((res) => {
+        if (res.error) {
+          toast.error(res.error, {
+            id: toastId,
+          });
+        }
+
+        if (res.success) {
+          toast.success(res.success, {
+            id: toastId,
+          });
+        }
+      });
+    });
   };
   return (
     <Card className="w-[400px]">

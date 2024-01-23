@@ -2,7 +2,7 @@ import FeaturesNews from "@/components/section/features-news";
 import LeatestNews from "@/components/section/leatest-news";
 import PopulerNews from "@/components/section/populer-news";
 
-export default function Home() {
+export default async function Home() {
   return (
     <main>
       <LeatestNews />

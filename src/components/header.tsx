@@ -1,7 +1,8 @@
-import { Facebook, Linkedin, Twitter, User } from "lucide-react";
+import { Facebook, Linkedin, Twitter } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
 import { Input } from "./ui/input";
+import UserButton from "./user-button";
 
 const Header = () => {
   const socialLink = [
@@ -70,9 +71,7 @@ const Header = () => {
             <Input placeholder="search news" />
           </div>
           <div>
-            <Link href="/login">
-              <User className="hover:text-orange-600 cursor-pointer" />
-            </Link>
+            <UserButton />
           </div>
         </div>
       </section>
