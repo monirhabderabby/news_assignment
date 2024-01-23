@@ -70,7 +70,9 @@ const Header = () => {
             <Input placeholder="search news" />
           </div>
           <div>
-            <User className="hover:text-orange-600 cursor-pointer" />
+            <Link href="/login">
+              <User className="hover:text-orange-600 cursor-pointer" />
+            </Link>
           </div>
         </div>
       </section>
