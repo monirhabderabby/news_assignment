@@ -1,5 +1,5 @@
 // Packages
-import { socials } from "@prisma/client";
+import { categories, socials } from "@prisma/client";
 import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,15 +12,18 @@ async function getData() {
   const res1 = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/social`, {
     method: "GET",
   });
+  const res2 = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/category`);
   const socials: socials = await res1.json();
+  const categoryList: categories[] = await res2.json();
 
   return {
     socials,
+    categoryList,
   };
 }
 
 const Header = async () => {
-  const { socials } = await getData();
+  const { socials, categoryList } = await getData();
 
   const socialLinks = [
     {
@@ -85,10 +88,10 @@ const Header = async () => {
       <section className="bg-gray-100 h-[60px] w-full ">
         <div className="flex justify-between contain items-center h-full">
           <div className="space-x-4">
-            {categories?.map(({ id, name }) => (
+            {categoryList?.map(({ id, name }) => (
               <Link
                 key={id}
-                href={`/news/${id}`}
+                href={`/news/${name.split(" ").join("_")}`}
                 className="bg-gray-200 hover:bg-gray-300 py-2 px-4"
               >
                 {name}
