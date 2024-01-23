@@ -1,22 +1,23 @@
-import { Facebook, Linkedin, Twitter } from "lucide-react";
+import { Facebook, Linkedin, Twitter, User } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
+import { Input } from "./ui/input";
 
 const Header = () => {
   const socialLink = [
     {
       id: 1,
-      icon: <Facebook className="w-5 h-5 hover:text-green-500" />,
+      icon: <Facebook className="w-5 h-5 hover:text-orange-600" />,
       link: "",
     },
     {
       id: 1,
-      icon: <Twitter className="w-5 h-5 hover:text-green-500" />,
+      icon: <Twitter className="w-5 h-5 hover:text-orange-600" />,
       link: "",
     },
     {
       id: 1,
-      icon: <Linkedin className="w-5 h-5 hover:text-green-500" />,
+      icon: <Linkedin className="w-5 h-5 hover:text-orange-600" />,
       link: "",
     },
   ];
@@ -52,15 +53,26 @@ const Header = () => {
           ))}
         </div>
       </section>
-      <section className="bg-gray-100 h-[60px] w-full flex justify-center items-center space-x-4">
-        {categories?.map(({ id, name }) => (
-          <Link
-            href={`/news/${id}`}
-            className="bg-gray-200 hover:bg-gray-300 py-2 px-4"
-          >
-            {name}
-          </Link>
-        ))}
+      <section className="bg-gray-100 h-[60px] w-full ">
+        <div className="flex justify-between contain items-center h-full">
+          <div className="space-x-4">
+            {categories?.map(({ id, name }) => (
+              <Link
+                key={id}
+                href={`/news/${id}`}
+                className="bg-gray-200 hover:bg-gray-300 py-2 px-4"
+              >
+                {name}
+              </Link>
+            ))}
+          </div>
+          <div>
+            <Input placeholder="search news" />
+          </div>
+          <div>
+            <User className="hover:text-orange-600 cursor-pointer" />
+          </div>
+        </div>
       </section>
     </div>
   );
