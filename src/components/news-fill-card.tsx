@@ -29,22 +29,7 @@ const NewsFillCard: React.FC<NewsFillCardProps> = async ({
   );
   const { base64 } = await getPlaiceholder(buffer);
   return (
-    <div
-      className={cn("h-full w-full relative overflow-hidden", className)}
-      // style={{
-      //   backgroundImage: `url(${image})`, // Replace 'your-image-url' with the actual URL of your image
-      //   backgroundSize: "cover", // Adjust the background size as needed
-      //   backgroundPosition: "center", // Adjust the background position as needed
-      //   transition: "transform 0.3s",
-      //   overflow: "hidden",
-      // }}
-      // onMouseEnter={(e) => {
-      //   e.currentTarget.style.transform = "scale(1.1)"; // Scale up on hover
-      // }}
-      // onMouseLeave={(e) => {
-      //   e.currentTarget.style.transform = "scale(1)"; // Return to the original size on hover out
-      // }}
-    >
+    <div className={cn("h-full w-full relative overflow-hidden", className)}>
       <Image
         src={image}
         alt="sdf"
