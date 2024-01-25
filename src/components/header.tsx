@@ -5,8 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 // Local Imports
+import dynamic from "next/dynamic";
 import { Input } from "./ui/input";
-import UserButton from "./user-button";
+const UserButton = dynamic(() => import("./user-button"));
 
 async function getData() {
   const res1 = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/social`, {
@@ -48,29 +49,18 @@ const Header = async () => {
     },
   ];
 
-  const categories = [
-    {
-      id: 1,
-      name: "Bangladesh",
-    },
-    {
-      id: 2,
-      name: "World",
-    },
-    {
-      id: 3,
-      name: "Sports",
-    },
-    {
-      id: 4,
-      name: "Business",
-    },
-  ];
   return (
     <div className="h-fit shadow-md ">
       <section className="flex h-[80px] justify-between items-center contain">
-        <div className="text-slate-500">{moment(new Date()).format("LL")}</div>
-        <h2>Kaler Kontho</h2>
+        <div className="text-slate-400 text-[14px]">
+          {moment(new Date()).format("LL")}
+        </div>
+        <Link
+          href="/"
+          className="text-[22px] text-orange-600 font-semibold bg-orange-50 px-3 py-1 rounded-[4px] "
+        >
+          News 24 ⏰
+        </Link>
         <div className="flex items-center gap-x-4 mt-1">
           {socialLinks?.map(({ icon, id, link }) => (
             <a key={id} href={link} target="_blank">

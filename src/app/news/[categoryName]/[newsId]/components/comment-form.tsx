@@ -6,10 +6,17 @@ import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { commentSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-interface CommentFormProps {}
-const CommentForm: React.FC<CommentFormProps> = ({}) => {
+interface CommentFormProps {
+  userId: number;
+  newsId: number;
+}
+const CommentForm: React.FC<CommentFormProps> = ({ userId, newsId }) => {
+  const [isLoading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof commentSchema>>({
     resolver: zodResolver(commentSchema),
     defaultValues: {
@@ -17,7 +24,23 @@ const CommentForm: React.FC<CommentFormProps> = ({}) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof commentSchema>) => {};
+  const onSubmit = async (values: z.infer<typeof commentSchema>) => {
+    setLoading(true);
+    const data = {
+      test: values.text,
+      userId,
+      newsId,
+    };
+
+    try {
+      await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/comment`, data);
+      form.reset();
+    } catch (error) {
+      toast.error("Failed to submit comment!");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div>
       <Form {...form}>
@@ -28,12 +51,16 @@ const CommentForm: React.FC<CommentFormProps> = ({}) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Comment</FormLabel>
-                <Textarea placeholder="Write your comment here..." {...field} />
+                <Textarea
+                  disabled={isLoading}
+                  placeholder="Write your comment here..."
+                  {...field}
+                />
               </FormItem>
             )}
           />
           <div className="flex justify-end">
-            <Button>Submit</Button>
+            <Button disabled={isLoading}>Submit</Button>
           </div>
         </form>
       </Form>

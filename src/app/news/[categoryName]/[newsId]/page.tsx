@@ -1,27 +1,53 @@
+// Packages
+import axios from "axios";
+import moment from "moment";
+import { Varela_Round } from "next/font/google";
+import Image from "next/image";
+import { getPlaiceholder } from "plaiceholder";
+
+// Local Imports
 import { auth } from "@/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import SectionTitle from "@/components/ui/section-title";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import moment from "moment";
-import { Varela_Round } from "next/font/google";
-import Image from "next/image";
+import { CommentType, NewsType } from "../../../../../types";
 import CommentForm from "./components/comment-form";
+import CommentList from "./components/comment-list";
 
 const inter = Varela_Round({ subsets: ["latin"], weight: ["400"] });
 
-const NewsPage = async () => {
+async function getData(id: number) {
+  const res = await axios.get(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/${id}`
+  );
+  const res2 = await axios.get(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment?newsId=${id}`
+  );
+
+  const data: NewsType = res.data;
+  const comments: CommentType[] = res2.data;
+
+  return { data, comments };
+}
+
+const NewsPage = async ({ params }: { params: { newsId: number } }) => {
   const authUser = await auth();
+  const { data: news, comments } = await getData(Number(params.newsId));
+
+  const buffer = await fetch(news.image).then(async (res) =>
+    Buffer.from(await res.arrayBuffer())
+  );
+  const { base64 } = await getPlaiceholder(buffer);
   return (
     <div className="contain py-10">
       <section className="w-2/3 mx-auto">
         <h3 className="text-[#111111] text-[32px]  font-medium text-center mx-auto">
-          WordPress News Magazine Charts the Most Chic and Fashionable Women of
-          New York City
+          {news.title}
         </h3>
         <div className="flex items-center gap-x-2 justify-center">
           <Image
-            src={authUser?.user.image as string}
+            src={news.user.image}
             alt="profile"
             width={20}
             height={20}
@@ -29,45 +55,40 @@ const NewsPage = async () => {
           />
           <span className="text-[#111111] text-[14px]">By</span>
           <div className="text-[#111111] text-[14px]">
-            <span className="font-semibold">Armin Vans</span> -{" "}
-            {moment(new Date("06-12-2015")).format("LL")}
+            <span className="font-semibold">{news.user.name}</span> -{" "}
+            {moment(news.createdAt).format("LL")}
           </div>
         </div>
 
         <Separator className="mx-auto my-8" />
         <div className="w-full relative h-[400px]">
-          <Image src="/party.jpg" alt="imag" fill />
+          <Image
+            src={news.image}
+            alt="imag"
+            fill
+            placeholder="blur"
+            blurDataURL={base64}
+          />
         </div>
         <div className="space-y-8 mt-16">
           <p className={cn("text-[#222222] text-[16px]", inter.className)}>
-            We woke reasonably late following the feast and free flowing wine
-            the night before. After gathering ourselves and our packs, we headed
-            down to our homestay family’s small dining room for breakfast. We
-            were making our way to the Rila Mountains, where we were visiting
-            the Rila Monastery where we enjoyed scrambled eggs, toast, mekitsi,
-            local jam and peppermint tea.
+            {news.text1}
           </p>
           <p className={cn("text-[#222222] text-[16px]", inter.className)}>
-            We woke reasonably late following the feast and free flowing wine
-            the night before. After gathering ourselves and our packs, we headed
-            down to our homestay family’s small dining room for breakfast.
+            {news.text2}
           </p>
           <p className={cn("text-[#222222] text-[16px]", inter.className)}>
-            We woke reasonably late following the feast and free flowing wine
-            the night before. After gathering ourselves and our packs, we headed
-            down to our homestay family’s small dining room for breakfast.
+            {news.text3}
           </p>
           <p className={cn("text-[#222222] text-[16px]", inter.className)}>
-            We woke reasonably late following the feast and free flowing wine
-            the night before. After gathering ourselves and our packs, we headed
-            down to our homestay family’s small dining room for breakfast.
+            {news.text4}
           </p>
         </div>
         <Card className="mt-8">
           <CardContent className="mt-7 flex gap-x-8">
-            <Image src="/party.jpg" alt="imag" width={150} height={150} />
+            <Image src={news.user.image} alt="imag" width={150} height={150} />
             <div>
-              <h4 className="text-[18px] font-medium">Monir Hossain</h4>
+              <h4 className="text-[18px] font-medium">{news.user.name}</h4>
               <a
                 href="https://www.monirhrabby.com"
                 target="_website"
@@ -85,8 +106,9 @@ const NewsPage = async () => {
           </CardContent>
         </Card>
         <div className="mt-8">
-          <SectionTitle title="Comments" />
-          <CommentForm />
+          <SectionTitle title={`${comments.length} Comments`} />
+          <CommentForm userId={Number(authUser?.user.id)} newsId={news.id} />
+          <CommentList comments={comments} />
         </div>
       </section>
     </div>

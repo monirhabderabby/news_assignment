@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
+import NProgress from "@/provider/NProgress";
 import ToastProvider from "@/provider/toast-provider";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
@@ -25,6 +26,7 @@ export default async function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <ToastProvider />
+          <NProgress />
           <Header />
           {children}
 

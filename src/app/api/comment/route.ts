@@ -1,39 +1,30 @@
 import { prismaDb } from "@/lib/db";
-import { newsType } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  const bodyData = await req.json();
 
   try {
-    const result = await prismaDb.news.create({
-      data: body,
+    const result = await prismaDb.comment.create({
+      data: bodyData,
     });
     return NextResponse.json(result, { status: 200 });
   } catch (error: any) {
-    console.log("NEWS_CREATE_ERROR", error);
+    console.log("COMMENT_CREATE_ERROR", error);
     return NextResponse.json("Internal Server Error!");
   }
 }
 
 export async function GET(req: Request) {
   const urlSearchParams = new URL(req.url).searchParams;
-  const type = urlSearchParams.get("type");
-  const cat = urlSearchParams.get("category");
-  const category = cat?.split("_").join(" ");
+  const newsId = urlSearchParams.get("newsId");
 
   try {
-    const result = await prismaDb.news.findMany({
+    const result = await prismaDb.comment.findMany({
       where: {
-        type: type as newsType,
-        AND: {
-          categories: {
-            name: category,
-          },
-        },
+        newsId: Number(newsId),
       },
       include: {
-        categories: true,
         user: true,
       },
     });

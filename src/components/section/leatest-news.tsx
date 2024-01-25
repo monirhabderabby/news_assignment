@@ -1,41 +1,11 @@
-import { categories, user } from "@prisma/client";
-import axios from "axios";
+import { NewsType } from "../../../types";
 import NewsFillCard from "../news-fill-card";
 
-type NewsType = {
-  id: number;
-  title: string;
-  short_des: string;
-  image: string;
-  keywords: string;
-  type: string; // You might want to replace this with the actual type for newsType
-  text1: string;
-  text2: string;
-  text3: string;
-  text4: string;
-  catID: number;
-  userID: number;
-  createdAt: Date; // You might want to replace this with the actual type for DateTime
-  updatedAt: string; // You might want to replace this with the actual type for DateTime
-  categories: categories;
-  user: user;
-};
-
-async function getData() {
-  const res1 = await axios.get(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/news?type=latest`
-  );
-
-  const newsList: NewsType[] = res1.data;
-
-  return {
-    newsList,
-  };
+interface LeatestNewsProps {
+  newsList: NewsType[];
 }
 
-const LeatestNews = async () => {
-  const { newsList } = await getData();
-
+const LeatestNews: React.FC<LeatestNewsProps> = async ({ newsList }) => {
   let content;
   if (newsList?.length === 0) {
     content = (
@@ -75,6 +45,7 @@ const LeatestNews = async () => {
                 createdAt={newsList[0].createdAt}
                 image={newsList[0].image}
                 author={newsList[0].user.name}
+                newsId={newsList[0].id}
               />
             )}
           </div>
@@ -86,6 +57,7 @@ const LeatestNews = async () => {
                 createdAt={newsList[1].createdAt}
                 image={newsList[1].image}
                 author={newsList[1].user.name}
+                newsId={newsList[1].id}
                 titleClass="text-[20px] w-[70%]"
               />
             )}
@@ -98,6 +70,7 @@ const LeatestNews = async () => {
                 createdAt={newsList[2].createdAt}
                 image={newsList[2].image}
                 author={newsList[2].user.name}
+                newsId={newsList[2].id}
                 titleClass="text-[16px] w-[90%]"
               />
             )}
@@ -110,6 +83,7 @@ const LeatestNews = async () => {
                 createdAt={newsList[3].createdAt}
                 image={newsList[3].image}
                 author={newsList[3].user.name}
+                newsId={newsList[3].id}
                 titleClass="text-[16px] w-[90%]"
               />
             )}

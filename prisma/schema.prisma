@@ -18,6 +18,7 @@ model user {
   image     String    @db.VarChar(300)
   accounts  Account[]
   news      news[]
+  comments  comment[]
   createdAt DateTime  @default(now()) @db.Timestamp(0)
   updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(0)
 }
@@ -74,8 +75,23 @@ model news {
 
   categories categories @relation(fields: [catID], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
+  comments comment[]
+
   createdAt DateTime @default(now()) @db.Timestamp(0)
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
+}
+
+model comment {
+  id   Int    @id @default(autoincrement())
+  test String @db.VarChar(400)
+
+  userId Int
+
+  user user @relation(fields: [userId], references: [id])
+
+  newsId Int
+
+  news news @relation(fields: [newsId], references: [id])
 }
 
 model socials {

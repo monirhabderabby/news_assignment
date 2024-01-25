@@ -1,8 +1,11 @@
 "use client";
 
+// Packages
 import { LogOut, User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+
+// Local Imports
 import { Button } from "./ui/button";
 import {
   DropdownMenu,

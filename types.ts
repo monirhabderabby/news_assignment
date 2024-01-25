@@ -18,3 +18,11 @@ export type NewsType = {
   categories: categories;
   user: user;
 };
+
+export type CommentType = {
+  id: number;
+  test: string;
+  userId: number;
+  newsId: number;
+  user: user;
+};
