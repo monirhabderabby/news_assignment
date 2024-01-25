@@ -17,21 +17,36 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
+  const whereCondition: any = {};
+
   const urlSearchParams = new URL(req.url).searchParams;
   const type = urlSearchParams.get("type");
   const cat = urlSearchParams.get("category");
   const category = cat?.split("_").join(" ");
+  const searchText = urlSearchParams.get("search");
+
+  // Handle type condition
+  if (type) {
+    whereCondition.type = type as newsType;
+  }
+
+  // Handle category condition
+  if (category) {
+    whereCondition.categories = {
+      name: category,
+    };
+  }
+
+  // Handle title condition
+  if (searchText) {
+    whereCondition.title = {
+      contains: searchText,
+    };
+  }
 
   try {
     const result = await prismaDb.news.findMany({
-      where: {
-        type: type as newsType,
-        AND: {
-          categories: {
-            name: category,
-          },
-        },
-      },
+      where: whereCondition,
       include: {
         categories: true,
         user: true,

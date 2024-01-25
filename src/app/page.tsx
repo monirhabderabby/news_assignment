@@ -1,3 +1,4 @@
+import NewsLetter from "@/components/news-letter";
 import FeaturesNews from "@/components/section/features-news";
 import LeatestNews from "@/components/section/leatest-news";
 import PopulerNews from "@/components/section/populer-news";
@@ -32,9 +33,12 @@ export default async function Home() {
     <main>
       <LeatestNews newsList={latestNewsList} />
       <PopulerNews newsList={populerNewsList} />
-      <div className="grid grid-cols-8 gap-8 contain">
-        <div className="col-span-6">
+      <div className="grid grid-cols-8 gap-8 contain relative">
+        <div className="col-span-5">
           <FeaturesNews newsList={featuresNewsList} />
+        </div>
+        <div className="col-span-3 mt-12">
+          <NewsLetter />
         </div>
       </div>
     </main>

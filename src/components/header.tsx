@@ -6,7 +6,7 @@ import Link from "next/link";
 
 // Local Imports
 import dynamic from "next/dynamic";
-import { Input } from "./ui/input";
+const SearchBar = dynamic(() => import("./search-bar"));
 const UserButton = dynamic(() => import("./user-button"));
 
 async function getData() {
@@ -89,7 +89,7 @@ const Header = async () => {
             ))}
           </div>
           <div>
-            <Input placeholder="search news" />
+            <SearchBar />
           </div>
           <div>
             <UserButton />
